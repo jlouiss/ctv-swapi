@@ -10,14 +10,14 @@
 	border: $focus-ring-width solid transparent;
 	border-radius: $radius;
 	padding: $space-sm;
+	padding-top: 0;
 	width: 280px;
-	min-height: 160px;
+	overflow: hidden;
 	cursor: pointer;
 }
 
 .transportation {
 	width: 360px;
-	min-height: 220px;
 }
 
 .focused {
@@ -26,9 +26,20 @@
 	transform: scale(1.03);
 }
 
+.image {
+	width: calc(100% + #{$space-sm * 2});
+	margin: 0 (-$space-sm);
+	height: 140px;
+	object-fit: cover;
+	border-radius: 0 0 $radius $radius;
+	background: $color-surface-raised;
+	flex-shrink: 0;
+}
+
 .name {
 	font-size: $font-size-sm;
 	font-weight: 700;
+	margin-top: $space-xs;
 }
 
 .fields {

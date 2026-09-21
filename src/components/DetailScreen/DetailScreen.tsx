@@ -1,5 +1,6 @@
 import type { Category, Entity } from '../../swapi/types';
 import { displayName, RELATED_FIELDS } from '../../swapi/related';
+import { imageUrl } from '../../swapi/image';
 import { useEntityDetail } from '../../hooks/useEntityDetail';
 import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
@@ -34,7 +35,10 @@ export function DetailScreen({ category, id }: { category: Category; id: string 
 
 	return (
 		<div className={styles.detail}>
-			<h1 className={styles.title}>{displayName(entity)}</h1>
+			<div className={styles.hero}>
+				<img className={styles.heroImage} src={imageUrl(category, id, 640, 360)} alt="" />
+				<h1 className={styles.title}>{displayName(entity)}</h1>
+			</div>
 			<dl className={styles.fields}>
 				{fieldsOf(category, entity).map((field) => (
 					<div className={styles.field} key={field.label}>

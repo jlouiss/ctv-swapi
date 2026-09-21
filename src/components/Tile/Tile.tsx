@@ -1,6 +1,8 @@
 import { useFocusable } from '@noriginmedia/norigin-spatial-navigation';
 import { isTransportationCategory, type Category, type Entity, type Film, type Vehicle, type Starship } from '../../swapi/types';
 import { displayName } from '../../swapi/related';
+import { extractId } from '../../swapi/id';
+import { imageUrl } from '../../swapi/image';
 import styles from './Tile.module.scss';
 
 function curatedFields(category: Category, entity: Entity): { label: string; value: string }[] {
@@ -76,6 +78,12 @@ export function Tile({ category, entity, focusKey, onFocus, onSelect }: TileProp
 			data-testid="entity-tile"
 			className={`${styles.tile} ${transportation ? styles.transportation : ''} ${focused ? styles.focused : ''}`}
 		>
+			<img
+				className={styles.image}
+				src={imageUrl(category, extractId(entity.url), transportation ? 360 : 280, 160)}
+				alt=""
+				loading="lazy"
+			/>
 			<span className={styles.name}>{displayName(entity)}</span>
 			<dl className={styles.fields}>
 				{fields.map((field) => (

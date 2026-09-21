@@ -70,15 +70,27 @@ an explicit `setFocus` target rather than assuming one.
 
 ### Screens (`src/components`)
 
-- `Shell` — the persistent 1920×1080 layout: top bar (`BackTile` + `CategorySwitcher`)
-  above the current screen.
+- `Shell` — the persistent 1920×1080 layout: a left sidebar (`Logo`, `BackTile`,
+  `CategorySwitcher`) beside the current screen.
+- `BackTile` — disabled (not focusable, not clickable) on the root category-list screen,
+  where there is genuinely nothing to go back to; enabled everywhere else, including while
+  search is active (it then exits search instead of popping navigation).
 - `ListScreen` — a category's tile grid, with a `Search` toggle that swaps in the
   `VirtualKeyboard` and filters live (debounced) instead of browsing. Loading and error
   states replace only the grid area, never the whole screen (spec stories 18–21).
-- `Tile` — two field layouts: the required 8-field spread for Vehicles/Starships, and a
-  smaller curated field pair for the other four categories.
-- `DetailScreen` / `RelatedList` — full field set plus related entities shown by name only
-  (not separately navigable — spec story 17).
+- `Tile` — a thumbnail plus two field layouts: the required 8-field spread for
+  Vehicles/Starships, and a smaller curated field pair for the other four categories.
+- `DetailScreen` / `RelatedList` — a hero image, full field set, and related entities shown
+  by name only (not separately navigable — spec story 17).
+- `VirtualKeyboard` — lowercase letters, a digits row, and the symbols most likely to
+  appear in Star Wars names/models (hyphen, apostrophe).
+
+### Images (`src/swapi/image.ts`)
+
+SWAPI has no images. Each tile and detail hero uses a placeholder from
+[picsum.photos](https://picsum.photos), seeded deterministically as `{category}-{id}` (e.g.
+`people-1`) via picsum's `/seed/` path — so the same entity always shows the same picture,
+without fetching or storing any image data.
 
 ## Testing
 

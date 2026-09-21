@@ -11,11 +11,12 @@ async function press(page: Page, key: string, times = 1) {
 	}
 }
 
-test('shows the People category by default with a persistent category switcher and back tile', async ({ page }) => {
+test('shows the People category by default with a persistent sidebar and disabled back tile', async ({ page }) => {
 	await page.goto('/');
 
 	await expect(page.getByRole('navigation', { name: 'Categories' })).toBeVisible();
 	await expect(page.getByRole('button', { name: 'Back' })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Back' })).toBeDisabled();
 	await expect(page.getByTestId('entity-tile').filter({ hasText: 'Luke Skywalker' })).toBeVisible();
 });
 
@@ -23,9 +24,10 @@ test('switching categories via the D-Pad replaces the list with the new category
 	await page.goto('/');
 	await expect(page.getByTestId('entity-tile').first()).toBeVisible();
 
-	// From the initial focus (Search toggle): Up -> Back, Right -> People, Right -> Planets, OK.
-	await press(page, 'ArrowUp');
-	await press(page, 'ArrowRight', 2);
+	// Sidebar is to the left of content: from the initial focus (Search toggle), Left reaches
+	// the category list (People, already active), Down reaches Planets.
+	await press(page, 'ArrowLeft');
+	await press(page, 'ArrowDown');
 	await press(page, 'Enter');
 
 	await expect(page.getByTestId('entity-tile').filter({ hasText: 'Tatooine' })).toBeVisible();
@@ -42,7 +44,8 @@ test('opening a tile via OK shows its detail screen, and Back returns to the lis
 	await expect(page.getByText('Height')).toBeVisible();
 
 	// Opening a detail screen auto-focuses Back (nothing else on the screen is navigable —
-	// related entities are listed, not focusable, per spec story 17).
+	// related entities are listed, not focusable, per spec story 17) — and Back is enabled here.
+	await expect(page.getByRole('button', { name: 'Back' })).toBeEnabled();
 	await press(page, 'Enter');
 
 	await expect(page.getByRole('heading', { level: 1 })).toHaveCount(0);
@@ -54,10 +57,11 @@ test('loads additional pages as focus approaches the end of the loaded set', asy
 	await expect(page.getByTestId('entity-tile').first()).toBeVisible();
 	await expect(page.getByTestId('entity-tile')).toHaveCount(10);
 
-	// People's first page is a 6-column, 2-row grid. Down, Down lands on the first item of row 2
-	// (index 6); Right, Right reaches index 8 — within PREFETCH_THRESHOLD of the 10-item page end.
+	// People's first page is a 5-column, 2-row grid at this viewport. Down, Down lands on the
+	// first item of row 2 (index 5); Right x3 reaches index 8 — within PREFETCH_THRESHOLD of
+	// the 10-item page end.
 	await press(page, 'ArrowDown', 2);
-	await press(page, 'ArrowRight', 2);
+	await press(page, 'ArrowRight', 3);
 
 	await expect(page.getByTestId('entity-tile')).toHaveCount(20, { timeout: 10_000 });
 });
@@ -69,8 +73,9 @@ test('searching narrows results to matches, and Back exits search back to the fu
 	await press(page, 'Enter'); // activate search (focus starts on the Search toggle)
 	await expect(page.getByLabel('On-screen keyboard')).toBeVisible();
 
-	// Spell "po" on the on-screen keyboard: Down to Q, Right x9 to P, OK, Left to O, OK.
-	await press(page, 'ArrowDown');
+	// Spell "po" on the on-screen keyboard: Down, Down to the q-row, Right x9 to p, OK, Left to
+	// o (same row), OK.
+	await press(page, 'ArrowDown', 2);
 	await press(page, 'ArrowRight', 9);
 	await press(page, 'Enter'); // "p"
 	await press(page, 'ArrowLeft');
@@ -80,8 +85,12 @@ test('searching narrows results to matches, and Back exits search back to the fu
 	await expect(page.getByTestId('entity-tile').filter({ hasText: 'C-3PO' })).toBeVisible();
 
 	// Back exits search mode (registered as a local back-handler override) rather than
-	// navigating away from the People screen.
+	// navigating away from the People screen. From "o": Up, Up exits the keyboard to the
+	// Search toggle, Left reaches the sidebar (People), Up reaches Back — enabled while
+	// search is active.
 	await press(page, 'ArrowUp', 2);
+	await press(page, 'ArrowLeft');
+	await press(page, 'ArrowUp');
 	await press(page, 'Enter');
 
 	await expect(page.getByLabel('On-screen keyboard')).toHaveCount(0);
@@ -98,7 +107,7 @@ test('shows a clear no-results message, distinct from an error, for a search tha
 	await expect(page.getByLabel('On-screen keyboard')).toBeVisible();
 
 	// "qq" matches no person's name.
-	await press(page, 'ArrowDown'); // Q
+	await press(page, 'ArrowDown', 2); // q-row
 	await press(page, 'Enter');
 	await press(page, 'Enter');
 
@@ -111,8 +120,8 @@ test('shows an inline error, not a full-screen takeover, when a request fails', 
 	await page.goto('/');
 	await expect(page.getByTestId('entity-tile').first()).toBeVisible();
 
-	await press(page, 'ArrowUp');
-	await press(page, 'ArrowRight', 2); // Back -> People -> Planets
+	await press(page, 'ArrowLeft'); // People
+	await press(page, 'ArrowDown'); // Planets
 	await press(page, 'Enter');
 
 	await expect(page.getByRole('alert')).toBeVisible();

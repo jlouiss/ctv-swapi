@@ -4,6 +4,7 @@ import { NavigationProvider, useNavigation } from './navigation/NavigationContex
 import { BackHandlerProvider } from './navigation/BackHandlerContext';
 import { BackTile } from './components/BackTile/BackTile';
 import { CategorySwitcher } from './components/CategorySwitcher/CategorySwitcher';
+import { Logo } from './components/Logo/Logo';
 import { ListScreen } from './components/ListScreen/ListScreen';
 import { DetailScreen } from './components/DetailScreen/DetailScreen';
 import shellStyles from './components/Shell/Shell.module.scss';
@@ -23,13 +24,14 @@ function Shell() {
 	const { screen } = useNavigation();
 	return (
 		<div className={shellStyles.shell}>
-			<div className={shellStyles.topBar}>
+			<aside className={shellStyles.sidebar}>
+				<Logo />
 				<BackTile />
 				<CategorySwitcher activeCategory={screen.category} />
-			</div>
-			<div className={shellStyles.main}>
+			</aside>
+			<main className={shellStyles.main}>
 				<Screens />
-			</div>
+			</main>
 		</div>
 	);
 }

@@ -2,14 +2,19 @@
 
 .switcher {
 	display: flex;
-	gap: $space-sm;
+	flex-direction: column;
+	gap: $space-xs;
 }
 
 .tile {
-	background: $color-surface;
-	border: $focus-ring-width solid transparent;
-	border-radius: $radius;
-	padding: $space-sm $space-md;
+	display: block;
+	width: 100%;
+	text-align: left;
+	background: transparent;
+	border: 0;
+	border-left: $focus-ring-width solid transparent;
+	border-radius: 0 $radius $radius 0;
+	padding: $space-xs $space-md;
 	font-size: $font-size-sm;
 	font-weight: 600;
 	cursor: pointer;
@@ -22,6 +27,7 @@
 }
 
 .focused {
-	border-color: $color-focus;
+	border-left-color: $color-focus;
 	color: $color-text;
+	background: $color-surface;
 }

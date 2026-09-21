@@ -1,0 +1,26 @@
+@use '../../styles/tokens' as *;
+
+.logo {
+	display: flex;
+	align-items: center;
+	gap: $space-xs;
+	padding-bottom: $space-lg;
+	margin-bottom: $space-lg;
+	border-bottom: 1px solid $color-border;
+}
+
+.mark {
+	font-size: 32px;
+	color: $color-accent;
+}
+
+.wordmark {
+	font-size: $font-size-sm;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+}
+
+.accent {
+	color: $color-text-muted;
+	font-weight: 400;
+}

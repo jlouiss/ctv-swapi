@@ -1,7 +1,9 @@
 import { useFocusable, FocusContext } from '@noriginmedia/norigin-spatial-navigation';
 import styles from './VirtualKeyboard.module.scss';
 
-const ROWS = ['QWERTYUIOP', 'ASDFGHJKL', 'ZXCVBNM'];
+// Numbers, lowercase letters, and the symbols most likely to appear in Star Wars
+// names/models (hyphen, apostrophe) — e.g. "Obi-Wan", "Jabba's Palace".
+const ROWS = ['1234567890', 'qwertyuiop', 'asdfghjkl', "zxcvbnm-'"];
 
 function Key({ label, focusKey, onPress, wide }: { label: string; focusKey: string; onPress: () => void; wide?: boolean }) {
 	const { ref, focused } = useFocusable({ focusKey, onEnterPress: onPress });

@@ -4,16 +4,26 @@
 	display: flex;
 	align-items: center;
 	gap: $space-xs;
-	background: $color-surface;
-	border: $focus-ring-width solid transparent;
-	border-radius: $radius;
-	padding: $space-sm $space-md;
+	width: 100%;
+	background: transparent;
+	border: 0;
+	border-left: $focus-ring-width solid transparent;
+	border-radius: 0 $radius $radius 0;
+	padding: $space-xs $space-md;
+	margin-bottom: $space-lg;
 	font-size: $font-size-sm;
 	font-weight: 600;
+	color: $color-text;
 	cursor: pointer;
 }
 
 .focused {
-	border-color: $color-focus;
-	background: $color-surface-raised;
+	border-left-color: $color-focus;
+	background: $color-surface;
+}
+
+.disabled {
+	color: $color-text-muted;
+	opacity: 0.4;
+	cursor: default;
 }
