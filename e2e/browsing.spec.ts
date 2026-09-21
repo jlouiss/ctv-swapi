@@ -102,13 +102,13 @@ test('searching narrows results to matches, and Back exits search back to the fu
 	await press(page, 'Enter'); // activate search (focus starts on the Search toggle)
 	await expect(page.getByLabel('On-screen keyboard')).toBeVisible();
 
-	// Spell "po" on the on-screen keyboard: Down, Down to the q-row, Right x9 to p, OK, Left to
-	// o (same row), OK.
+	// Spell "Po" on the on-screen keyboard: Down, Down to the q-row, Right x9 to p, OK (Shift
+	// is on by default, so this comes out "P" and auto-releases), Left to o (same row), OK.
 	await press(page, 'ArrowDown', 2);
 	await press(page, 'ArrowRight', 9);
-	await press(page, 'Enter'); // "p"
+	await press(page, 'Enter'); // "P"
 	await press(page, 'ArrowLeft');
-	await press(page, 'Enter'); // "po"
+	await press(page, 'Enter'); // "Po"
 
 	await expect(page.getByTestId('entity-tile')).toHaveCount(4, { timeout: 5000 });
 	await expect(page.getByTestId('entity-tile').filter({ hasText: 'C-3PO' })).toBeVisible();
@@ -135,12 +135,13 @@ test('shows a clear no-results message, distinct from an error, for a search tha
 	await press(page, 'Enter'); // activate search
 	await expect(page.getByLabel('On-screen keyboard')).toBeVisible();
 
-	// "qq" matches no person's name.
+	// "Qq" matches no person's name (Shift is on by default, so the first "q" comes out
+	// capitalized and auto-releases — search is case-insensitive either way).
 	await press(page, 'ArrowDown', 2); // q-row
 	await press(page, 'Enter');
 	await press(page, 'Enter');
 
-	await expect(page.getByText('No results for “qq”.')).toBeVisible({ timeout: 5000 });
+	await expect(page.getByText('No results for “Qq”.')).toBeVisible({ timeout: 5000 });
 	await expect(page.getByRole('alert')).toHaveCount(0);
 });
 

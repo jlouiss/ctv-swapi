@@ -82,8 +82,10 @@ an explicit `setFocus` target rather than assuming one.
   Vehicles/Starships, and a smaller curated field pair for the other four categories.
 - `DetailScreen` / `RelatedList` — a hero image, full field set, and related entities shown
   by name only (not separately navigable — spec story 17).
-- `VirtualKeyboard` — lowercase letters, a digits row, and the symbols most likely to
-  appear in Star Wars names/models (hyphen, apostrophe).
+- `VirtualKeyboard` — letters, a digits row, and the symbols most likely to appear in Star
+  Wars names/models (hyphen, apostrophe), plus a Shift key. Shift starts on (so the first
+  character typed is capitalized) and auto-releases after one letter, phone-keyboard style;
+  pressing it again re-arms it for another single capital.
 
 ### Images (`src/swapi/image.ts`)
 

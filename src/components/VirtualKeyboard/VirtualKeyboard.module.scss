@@ -31,6 +31,11 @@
 	width: 96px;
 }
 
+.active {
+	border-color: $color-accent;
+	color: $color-accent;
+}
+
 .focused {
 	border-color: $color-focus;
 	background: $color-accent;
