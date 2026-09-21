@@ -33,6 +33,35 @@ test('switching categories via the D-Pad replaces the list with the new category
 	await expect(page.getByTestId('entity-tile').filter({ hasText: 'Tatooine' })).toBeVisible();
 });
 
+test('D-Pad navigation keeps working after switching category (regression)', async ({ page }) => {
+	// A category switch unmounts and remounts ListScreen; if any of its focusable elements
+	// (e.g. the Search toggle) don't get a fresh registration on remount, the focus service
+	// loses its "current component" and every subsequent D-Pad press silently does nothing.
+	await page.goto('/');
+	await expect(page.getByTestId('entity-tile').first()).toBeVisible();
+
+	await press(page, 'ArrowLeft');
+	await press(page, 'ArrowDown'); // Planets
+	await press(page, 'Enter');
+	await expect(page.getByTestId('entity-tile').filter({ hasText: 'Tatooine' })).toBeVisible();
+
+	// Navigation must still respond: Down into the grid, OK to open a detail screen.
+	await press(page, 'ArrowDown');
+	await press(page, 'Enter');
+	await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+	await press(page, 'Enter'); // Back
+	await expect(page.getByRole('heading', { level: 1 })).toHaveCount(0);
+
+	// And it must survive a second consecutive switch, not just the first.
+	await press(page, 'ArrowLeft');
+	await press(page, 'ArrowDown'); // from Planets to Films
+	await press(page, 'Enter');
+	await expect(page.getByTestId('entity-tile').filter({ hasText: 'A New Hope' })).toBeVisible();
+	await press(page, 'ArrowDown');
+	await press(page, 'Enter');
+	await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+});
+
 test('opening a tile via OK shows its detail screen, and Back returns to the list', async ({ page }) => {
 	await page.goto('/');
 	await expect(page.getByTestId('entity-tile').first()).toBeVisible();

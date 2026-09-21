@@ -14,10 +14,20 @@ function Screens() {
 	useEffect(() => {
 		// Land focus on the new screen's content, or on Back when a detail screen has nothing
 		// else focusable (related entities are shown, not navigable — spec story 17).
-		setFocus(screen.type === 'list' ? `LIST_${screen.category}` : 'BACK_TILE');
+		// Target a specific focusable leaf, not the LIST_<category> container itself: focusing
+		// a container whose children haven't registered yet leaves the focus service's
+		// "current component" pointing at a non-interactive element, breaking further D-Pad
+		// navigation entirely.
+		setFocus(screen.type === 'list' ? 'SEARCH_TOGGLE' : 'BACK_TILE');
 	}, [screen.type, screen.category, screen.type === 'detail' ? screen.id : null]);
-	if (screen.type === 'list') return <ListScreen category={screen.category} />;
-	return <DetailScreen category={screen.category} id={screen.id} />;
+	if (screen.type === 'list') {
+		// Keyed by category so switching categories fully remounts the screen (and its
+		// children's useFocusable registrations) rather than reusing the same component
+		// instance with a stale focus-key closure — norigin-spatial-navigation registers a
+		// focusKey once at mount and doesn't re-register it on a prop change alone.
+		return <ListScreen key={screen.category} category={screen.category} />;
+	}
+	return <DetailScreen key={`${screen.category}:${screen.id}`} category={screen.category} id={screen.id} />;
 }
 
 function Shell() {

@@ -10,8 +10,11 @@
 }
 
 .mark {
-	font-size: 32px;
-	color: $color-accent;
+	width: 12px;
+	height: 24px;
+	border-radius: 3px;
+	background: $color-accent;
+	flex-shrink: 0;
 }
 
 .wordmark {

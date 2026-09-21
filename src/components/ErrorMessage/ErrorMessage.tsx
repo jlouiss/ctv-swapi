@@ -9,9 +9,7 @@ export interface ErrorMessageProps {
 export function ErrorMessage({ message }: ErrorMessageProps) {
 	return (
 		<div className={styles.error} role="alert">
-			<span className={styles.icon} aria-hidden="true">
-				⚠
-			</span>
+			<p className={styles.label}>Error</p>
 			<p>{message}</p>
 		</div>
 	);

@@ -15,6 +15,10 @@
 	padding: $space-lg;
 }
 
-.icon {
-	font-size: $font-size-xl;
+.label {
+	margin: 0;
+	font-size: $font-size-sm;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.08em;
 }

@@ -17,10 +17,12 @@ import styles from './ListScreen.module.scss';
 const PREFETCH_THRESHOLD = 2;
 
 function SearchToggle({ onPress }: { onPress: () => void }) {
+	// ListScreen is keyed by category (see App.tsx), so this always mounts fresh per category —
+	// a plain, stable focusKey is safe here (no risk of colliding with an outgoing instance).
 	const { ref, focused } = useFocusable({ focusKey: 'SEARCH_TOGGLE', onEnterPress: onPress });
 	return (
 		<button ref={ref} type="button" className={`${styles.searchToggle} ${focused ? styles.focused : ''}`}>
-			🔍 Search
+			Search
 		</button>
 	);
 }
