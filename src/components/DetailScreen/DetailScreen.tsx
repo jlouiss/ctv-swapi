@@ -2,7 +2,7 @@ import { Fragment } from 'preact';
 import { isTransportationCategory, type Category, type Entity } from '../../swapi/types';
 import { displayName, RELATED_FIELDS } from '../../swapi/related';
 import { imageUrl } from '../../swapi/image';
-import { TRANSPORTATION_TILE_FIELDS } from '../../swapi/transportationFields';
+import { TRANSPORTATION_DETAIL_PRIORITY_FIELDS } from '../../swapi/transportationFields';
 import { useEntityDetail } from '../../hooks/useEntityDetail';
 import { LoadingIndicator } from '../LoadingIndicator/LoadingIndicator';
 import { ErrorMessage } from '../ErrorMessage/ErrorMessage';
@@ -10,7 +10,7 @@ import { RelatedList } from '../RelatedList/RelatedList';
 import styles from './DetailScreen.module.scss';
 
 const HIDDEN_FIELDS = new Set(['name', 'title', 'url', 'created', 'edited']);
-const TRANSPORTATION_PRIORITY_KEYS = TRANSPORTATION_TILE_FIELDS.map((f) => f.key as string);
+const TRANSPORTATION_PRIORITY_KEYS = TRANSPORTATION_DETAIL_PRIORITY_FIELDS.map((f) => f.key as string);
 
 function labelFor(field: string): string {
 	return field
@@ -41,8 +41,8 @@ function fieldsOf(category: Category, entity: Entity): DetailField[] {
 		return entries.map(([key, value]) => ({ label: labelFor(key), value: String(value), priority: true }));
 	}
 
-	// Same curated fields as the tile (TRANSPORTATION_TILE_FIELDS), in that order, first —
-	// then the rest of the entity's fields, at lower weight (see .fieldSecondary).
+	// The curated priority fields (TRANSPORTATION_DETAIL_PRIORITY_FIELDS), in that order,
+	// first — then the rest of the entity's fields, at lower weight (see .fieldSecondary).
 	const byKey = new Map(entries);
 	const priority: DetailField[] = TRANSPORTATION_PRIORITY_KEYS.filter((key) => byKey.has(key)).map((key) => ({
 		label: labelFor(key),

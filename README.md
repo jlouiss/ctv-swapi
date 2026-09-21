@@ -82,9 +82,10 @@ an explicit `setFocus` target rather than assuming one.
   Vehicles/Starships (`src/swapi/transportationFields.ts`), and a smaller curated field pair
   for the other four categories.
 - `DetailScreen` / `RelatedList` — a hero image, full field set, and related entities shown
-  by name only (not separately navigable — spec story 17). For Vehicles/Starships, the
-  tile's curated fields repeat first at full weight, then the rest of the entity's fields
-  follow under a "More details" label at lower weight.
+  by name only (not separately navigable — spec story 17). For Vehicles/Starships, a curated
+  priority field list (`TRANSPORTATION_DETAIL_PRIORITY_FIELDS` — longer than, and different
+  from, the tile's own summary) repeats first at full weight, then the rest of the entity's
+  fields follow under a "More details" label at lower weight.
 - `VirtualKeyboard` — letters, a digits row, and the symbols most likely to appear in Star
   Wars names/models (hyphen, apostrophe), plus a Shift key. Shift starts on (so the first
   character typed is capitalized) and auto-releases after one letter, phone-keyboard style;
