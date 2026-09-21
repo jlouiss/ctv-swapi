@@ -51,3 +51,28 @@
 		font-size: $font-size-base;
 	}
 }
+
+// Lower-priority fields on a transportation entity's detail screen (everything past its
+// curated tile summary — see swapi/transportationFields.ts) — same layout, de-emphasized.
+.fieldSecondary {
+	dt {
+		font-size: $font-size-xs;
+		color: $color-text-muted;
+		margin-bottom: 4px;
+	}
+
+	dd {
+		margin: 0;
+		font-size: $font-size-sm;
+		color: $color-text-muted;
+	}
+}
+
+.sectionLabel {
+	font-size: $font-size-sm;
+	color: $color-text-muted;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	margin: $space-lg 0 $space-xs;
+	grid-column: 1 / -1;
+}

@@ -78,10 +78,13 @@ an explicit `setFocus` target rather than assuming one.
 - `ListScreen` — a category's tile grid, with a `Search` toggle that swaps in the
   `VirtualKeyboard` and filters live (debounced) instead of browsing. Loading and error
   states replace only the grid area, never the whole screen (spec stories 18–21).
-- `Tile` — a thumbnail plus two field layouts: the required 8-field spread for
-  Vehicles/Starships, and a smaller curated field pair for the other four categories.
+- `Tile` — a thumbnail plus two field layouts: a curated 4-field summary for
+  Vehicles/Starships (`src/swapi/transportationFields.ts`), and a smaller curated field pair
+  for the other four categories.
 - `DetailScreen` / `RelatedList` — a hero image, full field set, and related entities shown
-  by name only (not separately navigable — spec story 17).
+  by name only (not separately navigable — spec story 17). For Vehicles/Starships, the
+  tile's curated fields repeat first at full weight, then the rest of the entity's fields
+  follow under a "More details" label at lower weight.
 - `VirtualKeyboard` — letters, a digits row, and the symbols most likely to appear in Star
   Wars names/models (hyphen, apostrophe), plus a Shift key. Shift starts on (so the first
   character typed is capitalized) and auto-releases after one letter, phone-keyboard style;

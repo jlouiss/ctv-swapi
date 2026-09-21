@@ -44,11 +44,31 @@
 	flex: 1;
 	min-height: 0;
 	overflow-y: auto;
+	// Scrollbar is a visual affordance that more content exists below the fold — this UI is
+	// primarily D-Pad-driven, but it's built and often viewed in a desktop browser too, where
+	// the platform's default (often invisible-until-hovered) scrollbar gives no such cue.
+	scrollbar-color: $color-border $color-bg;
+	scrollbar-width: thin;
+
+	&::-webkit-scrollbar {
+		width: 12px;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: $color-bg;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: $color-border;
+		border-radius: $radius;
+	}
 }
 
 .grid {
-	display: flex;
-	flex-wrap: wrap;
+	display: grid;
+	// Four columns rather than an emergent (denser) count, so tiles read more comfortably
+	// at typical viewing distance.
+	grid-template-columns: repeat(4, 1fr);
 	gap: $space-md;
 	padding-bottom: $space-md;
 }

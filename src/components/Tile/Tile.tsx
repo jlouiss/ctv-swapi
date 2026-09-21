@@ -3,6 +3,7 @@ import { isTransportationCategory, type Category, type Entity, type Film, type V
 import { displayName } from '../../swapi/related';
 import { extractId } from '../../swapi/id';
 import { imageUrl } from '../../swapi/image';
+import { TRANSPORTATION_TILE_FIELDS } from '../../swapi/transportationFields';
 import styles from './Tile.module.scss';
 
 function curatedFields(category: Category, entity: Entity): { label: string; value: string }[] {
@@ -40,16 +41,10 @@ function curatedFields(category: Category, entity: Entity): { label: string; val
 	}
 }
 
+// Kept intentionally short — a viewer comparing options wants a glance, not a spec sheet.
+// The full field set, in this same priority order, appears on the detail screen.
 function transportationFields(entity: Vehicle | Starship): { label: string; value: string }[] {
-	return [
-		{ label: 'Model', value: entity.model },
-		{ label: 'Manufacturer', value: entity.manufacturer },
-		{ label: 'Cost in credits', value: entity.cost_in_credits },
-		{ label: 'Length', value: entity.length },
-		{ label: 'Crew', value: entity.crew },
-		{ label: 'Passengers', value: entity.passengers },
-		{ label: 'Cargo capacity', value: entity.cargo_capacity },
-	];
+	return TRANSPORTATION_TILE_FIELDS.map(({ key, label }) => ({ label, value: entity[key] as string }));
 }
 
 export interface TileProps {
@@ -76,11 +71,14 @@ export function Tile({ category, entity, focusKey, onFocus, onSelect }: TileProp
 			ref={ref}
 			type="button"
 			data-testid="entity-tile"
-			className={`${styles.tile} ${transportation ? styles.transportation : ''} ${focused ? styles.focused : ''}`}
+			className={`${styles.tile} ${focused ? styles.focused : ''}`}
 		>
 			<img
 				className={styles.image}
-				src={imageUrl(category, extractId(entity.url), transportation ? 360 : 280, 160)}
+				// Requested wider than the tile's own CSS width (280px): the grid stretches a
+				// tile to roughly a quarter of the viewport (~440-460px at 1920px wide), and
+				// requesting a fixed 280px image left it visibly upscaled/blurry.
+				src={imageUrl(category, extractId(entity.url), 480, 200)}
 				alt=""
 				loading="lazy"
 			/>

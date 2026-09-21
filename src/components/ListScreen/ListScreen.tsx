@@ -1,5 +1,5 @@
 import { useFocusable, FocusContext } from '@noriginmedia/norigin-spatial-navigation';
-import { useCallback, useState } from 'preact/hooks';
+import { useCallback, useRef, useState } from 'preact/hooks';
 import type { Category } from '../../swapi/types';
 import { extractId } from '../../swapi/id';
 import { useNavigation } from '../../navigation/NavigationContext';
@@ -15,6 +15,12 @@ import styles from './ListScreen.module.scss';
 // Focus reaches this many tiles from the end of the loaded set before the next page
 // prefetches silently — see docs/adr/0003-proximity-prefetch-pagination.md.
 const PREFETCH_THRESHOLD = 2;
+
+// Mouse-wheel scrolling is a secondary input path alongside D-Pad focus (spec targets D-Pad
+// only, but this is developed and often viewed in a desktop browser too) — prefetch also
+// fires once the viewer scrolls within this many pixels of the loaded content's bottom, so
+// scrolling alone reveals more results even without moving focus.
+const SCROLL_PREFETCH_MARGIN_PX = 400;
 
 function SearchToggle({ onPress }: { onPress: () => void }) {
 	// ListScreen is keyed by category (see App.tsx), so this always mounts fresh per category —
@@ -51,14 +57,27 @@ export function ListScreen({ category }: { category: Category }) {
 
 	const { ref, focusKey } = useFocusable({ focusKey: `LIST_${category}`, trackChildren: true });
 
-	const handleTileFocus = (index: number) => {
+	// Shared by both prefetch triggers below (D-Pad focus proximity and mouse-wheel scroll
+	// proximity) so the two inputs can never fall out of sync on what "load more" means.
+	const loadMore = () => {
 		if (isSearching) {
-			if (search.hasMore && index >= search.items.length - PREFETCH_THRESHOLD) {
-				search.loadMore();
-			}
-		} else if (index >= list.items.length - PREFETCH_THRESHOLD) {
+			if (search.hasMore) search.loadMore();
+		} else {
 			list.loadMore();
 		}
+	};
+
+	const handleTileFocus = (index: number) => {
+		const itemCount = isSearching ? search.items.length : list.items.length;
+		if (index >= itemCount - PREFETCH_THRESHOLD) loadMore();
+	};
+
+	const contentRef = useRef<HTMLDivElement>(null);
+	const handleScroll = () => {
+		const el = contentRef.current;
+		if (!el) return;
+		const nearBottom = el.scrollHeight - el.scrollTop - el.clientHeight < SCROLL_PREFETCH_MARGIN_PX;
+		if (nearBottom) loadMore();
 	};
 
 	return (
@@ -77,7 +96,7 @@ export function ListScreen({ category }: { category: Category }) {
 							onDone={exitSearch}
 						/>
 					)}
-					<div className={styles.content}>
+					<div className={styles.content} ref={contentRef} onScroll={handleScroll}>
 						{status === 'error' && <ErrorMessage message={error ?? 'Something went wrong.'} />}
 						{status !== 'error' && showInitialLoading && <LoadingIndicator label="Loading…" />}
 						{status !== 'error' && showEmptyState && isSearching && (

@@ -86,13 +86,43 @@ test('loads additional pages as focus approaches the end of the loaded set', asy
 	await expect(page.getByTestId('entity-tile').first()).toBeVisible();
 	await expect(page.getByTestId('entity-tile')).toHaveCount(10);
 
-	// People's first page is a 5-column, 2-row grid at this viewport. Down, Down lands on the
-	// first item of row 2 (index 5); Right x3 reaches index 8 — within PREFETCH_THRESHOLD of
-	// the 10-item page end.
+	// People's first page is a 4-column, 3-row grid at this viewport. Down, Down, Right x3
+	// reaches the last column of row 2 (index 7); Down from there lands on index 9 (row 3's
+	// only reachable column) — within PREFETCH_THRESHOLD of the 10-item page end.
 	await press(page, 'ArrowDown', 2);
 	await press(page, 'ArrowRight', 3);
+	await press(page, 'ArrowDown');
 
 	await expect(page.getByTestId('entity-tile')).toHaveCount(20, { timeout: 10_000 });
+});
+
+test('scrolling with the mouse wheel alone loads additional pages, without moving D-Pad focus', async ({ page }) => {
+	await page.goto('/');
+	await expect(page.getByTestId('entity-tile').first()).toBeVisible();
+
+	// Get one page loaded beyond the first via D-Pad (the first page alone doesn't overflow a
+	// fixed 1920x1080 canvas, so there's nothing to scroll yet) — same path as the test above.
+	await press(page, 'ArrowDown', 2);
+	await press(page, 'ArrowRight', 3);
+	await press(page, 'ArrowDown');
+	await expect(page.getByTestId('entity-tile')).toHaveCount(20, { timeout: 10_000 });
+
+	// From here on, only the mouse wheel — no further D-Pad input — should be enough to keep
+	// revealing more of the list, since content now overflows the viewport. Hover over the
+	// results first: a wheel event fires wherever the cursor already is, and it starts
+	// wherever Playwright last left it (not necessarily over the scrollable area).
+	const contentBox = await page.getByTestId('entity-tile').first().boundingBox();
+	await page.mouse.move(contentBox!.x + contentBox!.width / 2, contentBox!.y + contentBox!.height / 2);
+	for (let i = 0; i < 6; i++) {
+		await page.mouse.wheel(0, 1000);
+		await page.waitForTimeout(300);
+	}
+
+	// Repeated wheel events can trigger more than one prefetch in quick succession, so assert
+	// a lower bound rather than an exact count.
+	await expect
+		.poll(() => page.getByTestId('entity-tile').count(), { timeout: 10_000 })
+		.toBeGreaterThanOrEqual(30);
 });
 
 test('searching narrows results to matches, and Back exits search back to the full list', async ({ page }) => {
@@ -163,11 +193,11 @@ test('a search matching more than one page of results loads additional pages as 
 	await expect(page.getByTestId('entity-tile')).toHaveCount(10, { timeout: 5000 });
 
 	// Move from the keyboard into the results grid (Right x9, crossing the rest of the asdf
-	// row before reaching the first tile — the search results grid is narrower than full
-	// category browsing since the keyboard shares the row), then Down x3 reaches the grid's
-	// 3-columns-wide row 3 (index 9), within PREFETCH_THRESHOLD of the 10-item page end.
+	// row before reaching the first tile). The grid is a fixed 4 columns regardless of
+	// available width (narrower tiles while the keyboard shares the row, not fewer columns),
+	// so Down x2 reaches index 8 — within PREFETCH_THRESHOLD of the 10-item page end.
 	await press(page, 'ArrowRight', 9);
-	await press(page, 'ArrowDown', 3);
+	await press(page, 'ArrowDown', 2);
 
 	await expect(page.getByTestId('entity-tile')).toHaveCount(20, { timeout: 10_000 });
 });
