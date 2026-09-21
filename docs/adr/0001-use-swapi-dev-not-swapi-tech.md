@@ -1,0 +1,3 @@
+# Use swapi.dev, not swapi.tech, as the data source
+
+Both `swapi.dev` and its newer successor `swapi.tech` are live. We chose `swapi.dev` because its list endpoints return full resource fields directly (swapi.tech's list endpoints return only `uid`/`name`/`url`, requiring a follow-up request per item to get Model/Manufacturer/etc.), and its error responses are consistent JSON 404s (swapi.tech returns HTTP 200 with an HTML shell for an invalid category, which would break the "error message on invalid request" requirement). swapi.tech is the actively-promoted successor, so a future reader might expect it — this is a deliberate deviation.
