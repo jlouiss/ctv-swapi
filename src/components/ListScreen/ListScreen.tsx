@@ -45,14 +45,18 @@ export function ListScreen({ category }: { category: Category }) {
 	const items = isSearching ? search.items : list.items;
 	const status = isSearching ? search.status : list.status;
 	const error = isSearching ? search.error : list.error;
-	const showLoadingMore = !isSearching && status === 'loading' && items.length > 0;
+	const showLoadingMore = isSearching ? search.loadingMore : status === 'loading' && items.length > 0;
 	const showInitialLoading = status === 'loading' && items.length === 0;
 	const showEmptyState = status === 'idle' && items.length === 0;
 
 	const { ref, focusKey } = useFocusable({ focusKey: `LIST_${category}`, trackChildren: true });
 
 	const handleTileFocus = (index: number) => {
-		if (!isSearching && index >= list.items.length - PREFETCH_THRESHOLD) {
+		if (isSearching) {
+			if (search.hasMore && index >= search.items.length - PREFETCH_THRESHOLD) {
+				search.loadMore();
+			}
+		} else if (index >= list.items.length - PREFETCH_THRESHOLD) {
 			list.loadMore();
 		}
 	};

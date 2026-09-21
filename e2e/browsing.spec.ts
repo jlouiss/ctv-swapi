@@ -145,6 +145,33 @@ test('shows a clear no-results message, distinct from an error, for a search tha
 	await expect(page.getByRole('alert')).toHaveCount(0);
 });
 
+test('a search matching more than one page of results loads additional pages as focus scrolls (ticket 07)', async ({
+	page,
+}) => {
+	await page.goto('/');
+	await expect(page.getByTestId('entity-tile').first()).toBeVisible();
+
+	await press(page, 'Enter'); // activate search (focus starts on the Search toggle)
+	await expect(page.getByLabel('On-screen keyboard')).toBeVisible();
+
+	// "a" matches 58 people on swapi.dev — well over one page of 10. Down x3 from the Search
+	// toggle reaches the asdf-row (ROWS[2] in VirtualKeyboard), landing on "a" (first key), OK
+	// types it (Shift is on by default, so this comes out "A"; search is case-insensitive).
+	await press(page, 'ArrowDown', 3);
+	await press(page, 'Enter'); // "A"
+
+	await expect(page.getByTestId('entity-tile')).toHaveCount(10, { timeout: 5000 });
+
+	// Move from the keyboard into the results grid (Right x9, crossing the rest of the asdf
+	// row before reaching the first tile — the search results grid is narrower than full
+	// category browsing since the keyboard shares the row), then Down x3 reaches the grid's
+	// 3-columns-wide row 3 (index 9), within PREFETCH_THRESHOLD of the 10-item page end.
+	await press(page, 'ArrowRight', 9);
+	await press(page, 'ArrowDown', 3);
+
+	await expect(page.getByTestId('entity-tile')).toHaveCount(20, { timeout: 10_000 });
+});
+
 test('shows an inline error, not a full-screen takeover, when a request fails', async ({ page }) => {
 	await page.route('**/swapi.dev/api/planets/**', (route) => route.abort('failed'));
 	await page.goto('/');
