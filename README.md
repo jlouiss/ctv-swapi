@@ -84,8 +84,10 @@ an explicit `setFocus` target rather than assuming one.
 - `DetailScreen` / `RelatedList` — a hero image, full field set, and related entities shown
   by name only (not separately navigable — spec story 17). For Vehicles/Starships, a curated
   priority field list (`TRANSPORTATION_DETAIL_PRIORITY_FIELDS` — longer than, and different
-  from, the tile's own summary) repeats first at full weight, then the rest of the entity's
-  fields follow under a "More details" label at lower weight.
+  from, the tile's own summary) repeats first, then the rest of the entity's fields follow on
+  a fresh row (same styling throughout — a grouping split, not a visual-weight one). A Film's
+  Opening Crawl gets its own full-width row, with its per-line crawl breaks collapsed into
+  flowing prose (paragraph breaks kept).
 - `VirtualKeyboard` — letters, a digits row, and the symbols most likely to appear in Star
   Wars names/models (hyphen, apostrophe), plus a Shift key. Shift starts on (so the first
   character typed is capitalized) and auto-releases after one letter, phone-keyboard style;

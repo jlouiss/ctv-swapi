@@ -66,9 +66,9 @@
 
 .grid {
 	display: grid;
-	// Four columns rather than an emergent (denser) count, so tiles read more comfortably
-	// at typical viewing distance.
-	grid-template-columns: repeat(4, 1fr);
+	// Fixed at 5 columns to fill the 1920px canvas width exactly — 4 left a visible gap on
+	// the right at native 1080p.
+	grid-template-columns: repeat(5, 1fr);
 	gap: $space-md;
 	padding-bottom: $space-md;
 }

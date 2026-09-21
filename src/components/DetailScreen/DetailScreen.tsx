@@ -12,6 +12,18 @@ import styles from './DetailScreen.module.scss';
 const HIDDEN_FIELDS = new Set(['name', 'title', 'url', 'created', 'edited']);
 const TRANSPORTATION_PRIORITY_KEYS = TRANSPORTATION_DETAIL_PRIORITY_FIELDS.map((f) => f.key as string);
 
+// swapi's opening_crawl has a hard line break after nearly every line (formatted for the
+// movie's scrolling-crawl effect, not for prose) and a blank line between paragraphs. Now
+// that the field gets a full-width row (see .fieldWide) to reflow naturally, collapsing the
+// single breaks into spaces reads far better than honoring every one of them — the blank
+// line between paragraphs is kept.
+function formatOpeningCrawl(value: string): string {
+	return value
+		.split(/\r?\n\r?\n/)
+		.map((paragraph) => paragraph.replace(/\r?\n/g, ' ').trim())
+		.join('\n\n');
+}
+
 function labelFor(field: string): string {
 	return field
 		.split('_')
@@ -22,10 +34,13 @@ function labelFor(field: string): string {
 interface DetailField {
 	label: string;
 	value: string;
-	/** Priority fields (a transportation entity's tile summary) render first and full-weight;
-	 * the rest of the entity's fields follow at lower visual weight. Every field is priority
-	 * for non-transportation categories — there's no tile/detail split to make there. */
+	/** Priority fields (a transportation entity's curated summary) render first, grouped
+	 * onto a fresh row from the rest of the entity's fields — same styling throughout, this
+	 * is purely an ordering/grouping split, not a visual-weight one. Every field is priority
+	 * for non-transportation categories — there's no such split to make there. */
 	priority: boolean;
+	/** A field long enough to want its own full-width row (e.g. a Film's opening crawl). */
+	wide?: boolean;
 }
 
 // Related fields are rendered separately by RelatedList (resolved to names, read-only —
@@ -36,13 +51,19 @@ function fieldsOf(category: Category, entity: Entity): DetailField[] {
 	const entries = Object.entries(entity as unknown as Record<string, unknown>).filter(
 		([key]) => !HIDDEN_FIELDS.has(key) && !relatedFieldNames.has(key),
 	);
+	const wide = (key: string) => category === 'films' && key === 'opening_crawl';
 
 	if (!isTransportationCategory(category)) {
-		return entries.map(([key, value]) => ({ label: labelFor(key), value: String(value), priority: true }));
+		return entries.map(([key, value]) => ({
+			label: labelFor(key),
+			value: wide(key) ? formatOpeningCrawl(String(value)) : String(value),
+			priority: true,
+			wide: wide(key),
+		}));
 	}
 
 	// The curated priority fields (TRANSPORTATION_DETAIL_PRIORITY_FIELDS), in that order,
-	// first — then the rest of the entity's fields, at lower weight (see .fieldSecondary).
+	// first — then the rest of the entity's fields, grouped onto a following row.
 	const byKey = new Map(entries);
 	const priority: DetailField[] = TRANSPORTATION_PRIORITY_KEYS.filter((key) => byKey.has(key)).map((key) => ({
 		label: labelFor(key),
@@ -71,8 +92,8 @@ export function DetailScreen({ category, id }: { category: Category; id: string 
 			<dl className={styles.fields}>
 				{fieldsOf(category, entity).map((field, index, all) => (
 					<Fragment key={field.label}>
-						{!field.priority && all[index - 1]?.priority && <div className={styles.sectionLabel}>More details</div>}
-						<div className={field.priority ? styles.field : styles.fieldSecondary}>
+						{!field.priority && all[index - 1]?.priority && <div className={styles.sectionBreak} />}
+						<div className={`${styles.field} ${field.wide ? styles.fieldWide : ''}`}>
 							<dt>{field.label}</dt>
 							<dd>{field.value}</dd>
 						</div>

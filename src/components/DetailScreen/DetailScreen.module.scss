@@ -52,27 +52,18 @@
 	}
 }
 
-// Lower-priority fields on a transportation entity's detail screen (everything past its
-// curated tile summary — see swapi/transportationFields.ts) — same layout, de-emphasized.
-.fieldSecondary {
-	dt {
-		font-size: $font-size-xs;
-		color: $color-text-muted;
-		margin-bottom: 4px;
-	}
+// A field long enough to want the full row to itself (e.g. a Film's opening crawl).
+.fieldWide {
+	grid-column: 1 / -1;
 
 	dd {
-		margin: 0;
-		font-size: $font-size-sm;
-		color: $color-text-muted;
+		white-space: pre-line;
 	}
 }
 
-.sectionLabel {
-	font-size: $font-size-sm;
-	color: $color-text-muted;
-	text-transform: uppercase;
-	letter-spacing: 0.05em;
-	margin: $space-lg 0 $space-xs;
+// An invisible full-row spacer that pushes a transportation entity's remaining fields (past
+// its curated priority summary — see swapi/transportationFields.ts) onto a fresh grid row.
+.sectionBreak {
 	grid-column: 1 / -1;
+	height: $space-sm;
 }
