@@ -1,0 +1,19 @@
+@use '../../styles/tokens' as *;
+
+.tile {
+	display: flex;
+	align-items: center;
+	gap: $space-xs;
+	background: $color-surface;
+	border: $focus-ring-width solid transparent;
+	border-radius: $radius;
+	padding: $space-sm $space-md;
+	font-size: $font-size-sm;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.focused {
+	border-color: $color-focus;
+	background: $color-surface-raised;
+}

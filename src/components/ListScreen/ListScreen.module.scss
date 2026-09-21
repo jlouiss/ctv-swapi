@@ -1,0 +1,60 @@
+@use '../../styles/tokens' as *;
+
+.screen {
+	display: flex;
+	flex-direction: column;
+	gap: $space-md;
+	height: 100%;
+}
+
+.header {
+	display: flex;
+	align-items: center;
+	gap: $space-md;
+}
+
+.searchToggle {
+	background: $color-surface;
+	border: $focus-ring-width solid transparent;
+	border-radius: $radius;
+	padding: $space-xs $space-md;
+	font-size: $font-size-sm;
+	cursor: pointer;
+	color: $color-text;
+}
+
+.focused {
+	border-color: $color-focus;
+	background: $color-surface-raised;
+}
+
+.query {
+	color: $color-text-muted;
+	font-size: $font-size-sm;
+}
+
+.body {
+	display: flex;
+	gap: $space-lg;
+	flex: 1;
+	min-height: 0;
+}
+
+.content {
+	flex: 1;
+	min-height: 0;
+	overflow-y: auto;
+}
+
+.grid {
+	display: flex;
+	flex-wrap: wrap;
+	gap: $space-md;
+	padding-bottom: $space-md;
+}
+
+.noResults {
+	font-size: $font-size-lg;
+	color: $color-text-muted;
+	padding: $space-lg;
+}

@@ -1,0 +1,27 @@
+@use '../../styles/tokens' as *;
+
+.switcher {
+	display: flex;
+	gap: $space-sm;
+}
+
+.tile {
+	background: $color-surface;
+	border: $focus-ring-width solid transparent;
+	border-radius: $radius;
+	padding: $space-sm $space-md;
+	font-size: $font-size-sm;
+	font-weight: 600;
+	cursor: pointer;
+	color: $color-text-muted;
+}
+
+.active {
+	color: $color-text;
+	background: $color-surface-raised;
+}
+
+.focused {
+	border-color: $color-focus;
+	color: $color-text;
+}

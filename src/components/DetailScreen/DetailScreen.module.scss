@@ -1,0 +1,32 @@
+@use '../../styles/tokens' as *;
+
+.detail {
+	overflow-y: auto;
+	height: 100%;
+	padding-right: $space-sm;
+}
+
+.title {
+	font-size: $font-size-xl;
+	margin: 0 0 $space-md;
+}
+
+.fields {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: $space-md $space-lg;
+	margin: 0;
+}
+
+.field {
+	dt {
+		font-size: $font-size-sm;
+		color: $color-text-muted;
+		margin-bottom: 4px;
+	}
+
+	dd {
+		margin: 0;
+		font-size: $font-size-base;
+	}
+}

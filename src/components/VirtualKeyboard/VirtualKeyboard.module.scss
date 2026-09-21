@@ -1,0 +1,38 @@
+@use '../../styles/tokens' as *;
+
+.keyboard {
+	display: flex;
+	flex-direction: column;
+	gap: $space-xs;
+	background: $color-surface;
+	border-radius: $radius;
+	padding: $space-sm;
+	width: 480px;
+}
+
+.row {
+	display: flex;
+	gap: $space-xs;
+	justify-content: center;
+}
+
+.key {
+	background: $color-surface-raised;
+	border: $focus-ring-width solid transparent;
+	border-radius: 8px;
+	width: 40px;
+	height: 40px;
+	font-size: $font-size-sm;
+	cursor: pointer;
+	color: $color-text;
+}
+
+.wide {
+	width: 96px;
+}
+
+.focused {
+	border-color: $color-focus;
+	background: $color-accent;
+	color: $color-bg;
+}

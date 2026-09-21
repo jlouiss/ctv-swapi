@@ -1,0 +1,28 @@
+@use './tokens' as *;
+
+* {
+	box-sizing: border-box;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+	background: $color-bg;
+	color: $color-text;
+	font-family: 'Helvetica Neue', Arial, sans-serif;
+	font-size: $font-size-base;
+	overflow: hidden;
+}
+
+button {
+	font: inherit;
+	color: inherit;
+}
+
+#app {
+	width: 1920px;
+	height: 1080px;
+	overflow: hidden;
+	position: relative;
+}

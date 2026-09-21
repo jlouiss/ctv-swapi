@@ -1,0 +1,58 @@
+@use '../../styles/tokens' as *;
+
+.tile {
+	display: flex;
+	flex-direction: column;
+	gap: $space-xs;
+	align-items: flex-start;
+	text-align: left;
+	background: $color-surface;
+	border: $focus-ring-width solid transparent;
+	border-radius: $radius;
+	padding: $space-sm;
+	width: 280px;
+	min-height: 160px;
+	cursor: pointer;
+}
+
+.transportation {
+	width: 360px;
+	min-height: 220px;
+}
+
+.focused {
+	border-color: $color-focus;
+	background: $color-surface-raised;
+	transform: scale(1.03);
+}
+
+.name {
+	font-size: $font-size-sm;
+	font-weight: 700;
+}
+
+.fields {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	margin: 0;
+	width: 100%;
+}
+
+.field {
+	display: flex;
+	justify-content: space-between;
+	gap: $space-xs;
+	font-size: 16px;
+	color: $color-text-muted;
+
+	dt {
+		font-weight: 500;
+	}
+
+	dd {
+		margin: 0;
+		color: $color-text;
+		text-align: right;
+	}
+}
