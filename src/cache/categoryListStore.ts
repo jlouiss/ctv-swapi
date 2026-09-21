@@ -5,13 +5,12 @@ import type { NormalizedCache } from './normalizedCache';
 export interface CategoryListState {
 	order: string[];
 	next: string | null;
-	count: number | null;
 	status: 'idle' | 'loading' | 'error';
 	error: string | null;
 }
 
 function emptyState(): CategoryListState {
-	return { order: [], next: null, count: null, status: 'idle', error: null };
+	return { order: [], next: null, status: 'idle', error: null };
 }
 
 /**
@@ -73,7 +72,6 @@ export class CategoryListStore {
 				this.setState(category, {
 					order: [...current.order, ...ids],
 					next: page.next,
-					count: page.count,
 					status: 'idle',
 				});
 			})

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'preact/hooks';
 import { detailUrl, fetchEntity, isAbortError, SwapiError } from '../swapi/client';
 import { entityCache, type NormalizedCache } from '../cache/normalizedCache';
-import { categoryFromUrl, displayName, RELATED_FIELDS, relatedUrls } from '../swapi/related';
+import { displayName, RELATED_FIELDS, relatedUrls } from '../swapi/related';
 import type { Category, Entity } from '../swapi/types';
 
 export interface RelatedGroup {
@@ -81,5 +81,3 @@ export function useEntityDetail(
 
 	return state;
 }
-
-export { categoryFromUrl };

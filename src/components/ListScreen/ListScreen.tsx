@@ -62,7 +62,7 @@ export function ListScreen({ category }: { category: Category }) {
 	const loadMore = () => {
 		if (isSearching) {
 			if (search.hasMore) search.loadMore();
-		} else {
+		} else if (list.hasMore) {
 			list.loadMore();
 		}
 	};

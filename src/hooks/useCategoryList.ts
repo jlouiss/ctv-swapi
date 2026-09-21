@@ -12,7 +12,6 @@ export interface UseCategoryListResult {
 	items: Entity[];
 	status: 'idle' | 'loading' | 'error';
 	error: string | null;
-	count: number | null;
 	hasMore: boolean;
 	/** Call when focus approaches the end of the loaded set, to prefetch the next page. */
 	loadMore: () => void;
@@ -45,7 +44,6 @@ export function useCategoryList(category: Category, deps: UseCategoryListDeps = 
 		items,
 		status: state.status,
 		error: state.error,
-		count: state.count,
 		hasMore: state.next !== null,
 		loadMore,
 	};
